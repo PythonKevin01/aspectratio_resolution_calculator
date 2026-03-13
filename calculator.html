@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aspect Ratio Calculator</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #1a1a1a;
+            background-color: #f4f4f4;
+            padding: 20px;
+            margin: 0;
+        }
+        .calculator-container {
+            background-color: #ffffff;
+            border: 1px solid #111;
+            border-left: 10px solid #d52b1e;
+            padding: 22px;
+            max-width: 500px;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #111;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #d52b1e;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            width: 120px;
+            font-family: monospace;
+        }
+        input[type="number"]:focus {
+            border-color: #111;
+            outline: none;
+        }
+        .x-divider {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .result-box {
+            background-color: #111;
+            color: #ffffff;
+            padding: 18px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .result-ratio {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d52b1e;
+            display: block;
+            margin-top: 8px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-container">
+        <h2>Aspect Ratio Calculator</h2>
+        <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Voer de breedte en de hoogte van jouw videobestand in pixels in om direct de wiskundige aspect ratio te berekenen.</p>
+        
+        <div class="input-group">
+            <div class="input-field">
+                <label for="width">Breedte (px)</label>
+                <input type="number" id="width" value="1920" oninput="calculateRatio()">
+            </div>
+            <div class="x-divider">&times;</div>
+            <div class="input-field">
+                <label for="height">Hoogte (px)</label>
+                <input type="number" id="height" value="1080" oninput="calculateRatio()">
+            </div>
+        </div>
+
+        <div class="result-box">
+            De gedetecteerde Aspect Ratio is:
+            <span class="result-ratio" id="result">16:9</span>
+        </div>
+    </div>
+
+    <script>
+        // Functie om de Grootste Gemene Deler (Greatest Common Divisor) te berekenen
+        function gcd(a, b) {
+            return (b == 0) ? a : gcd(b, a % b);
+        }
+
+        function calculateRatio() {
+            let width = parseInt(document.getElementById('width').value);
+            let height = parseInt(document.getElementById('height').value);
+            let resultText = document.getElementById('result');
+
+            if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+                resultText.innerText = "Ongeldig";
+                resultText.style.color = "#fff";
+                return;
+            }
+
+            let divisor = gcd(width, height);
+            let aspectWidth = width / divisor;
+            let aspectHeight = height / divisor;
+
+            // Uitzondering voor veelvoorkomende afrondingen (zoals 1366x768 wat officieel geen exact 16:9 is, maar in de praktijk wel zo wordt benoemd)
+            if (width === 1366 && height === 768) {
+                aspectWidth = 16;
+                aspectHeight = 9;
+            }
+
+            resultText.innerText = aspectWidth + ":" + aspectHeight;
+            resultText.style.color = "#d52b1e";
+        }
+    </script>
+
+</body>
+</html>
